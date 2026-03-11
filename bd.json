@@ -1,0 +1,18 @@
+{
+  "registro_institucional": [
+    {
+      "id": 1773154077389,
+      "tipo": "Planilla",
+      "titulo": "Xoxo",
+      "responsable": "Yo quien mas",
+      "fecha": "10/3/2026"
+    },
+    {
+      "id": 1773154356109,
+      "tipo": "Acta",
+      "titulo": "Nepe",
+      "responsable": "yo",
+      "fecha": "10/3/2026"
+    }
+  ]
+}
