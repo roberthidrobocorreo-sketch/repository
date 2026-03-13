@@ -1,105 +1,155 @@
 const prompt = require("prompt-sync")();
 const fs = require("fs");
-const basededatos = "./bd.json";
-
-var documentos = [];
-
-if (fs.existsSync(basededatos)) {
-    const contenido = fs.readFileSync(basededatos, "utf-8");
-    const datosCargados = JSON.parse(contenido);
-
-    documentos = datosCargados.registro_institucional || [];
-}
-
-function actualizarJSON() {
-    const dataParaGuardar = { registro_institucional: documentos };
-    fs.writeFileSync(basededatos, JSON.stringify(dataParaGuardar, null, 2));
-}
+const readline = require("readline-sync");
+const { Acta, Documento } = require("./claseDocumentos");
+let baseDatos = new Documento("./bd.json");
 
 var opcion = 0;
 
 do {
+    console.clear();
     console.log("\n--- GESTOR DE DOCUMENTOS INSTITUCIONALES ---");
     console.log("1. Crear Nuevo Documento");
     console.log("2. Ver Documentos Registrados");
-    console.log("3. Modificar Títulos");
+    console.log("3. Modificar Documentos");
     console.log("4. Eliminar Documento");
     console.log("5. Salir");
     
     opcion = prompt("Elige una opción: ");
-    let idBusqueda;
+    
 
     switch (opcion) {
         case "1":
+            console.clear();
             console.log("\nRegistrando un nuevo documento...");
-            let id = Date.now();
+
+            id = baseDatos.generarId();
             let tipo = prompt("Tipo (Acta/Planilla): ");
             let titulo = prompt("Título del Documento: ");
-            let resp = prompt("Autor: ");
+            let responsable = prompt("Autor: ");
+            let fecha = new Date().toLocaleDateString();
             
-            documentos.push({
-                id: id,
-                tipo: tipo,
-                titulo: titulo,
-                responsable: resp,
-                fecha: new Date().toLocaleDateString()
-            });
-            actualizarJSON();
+            baseDatos.registrarDocumento(id, tipo, titulo, responsable, fecha);
+            
             console.log("Guardado. No pierdas el ID: " + id);
             break;
-
         case "2":
+            console.clear();
             console.log("\nReflejando registros ingresados...");
-            if (documentos.length === 0) {
+            if (baseDatos.registros.length === 0) {
                 console.log("Bandeja de documentos vacia");
+                readline.keyInPause("presione una tecla para continuar");
                 break;
             }
-            console.table(documentos);
-            break;
-
+            else{
+                console.table(baseDatos.registros);
+                readline.keyInPause("presione una tecla para continuar");
+                break;
+            }
+            
         case "3":
-            console.log("\nModificando títulos...");
-            idBusqueda = prompt("Pon el ID del documento que quieres cambiar: ");
-            let docEncontrado = documentos.find(d => d.id == idBusqueda);
-            
-            if (docEncontrado === undefined) {
-                console.log("El ID no es existente.");
-                break;
-            }
-            
-            let nuevoTitulo = prompt("Nuevo título: ");
-            docEncontrado.titulo = nuevoTitulo;
+            console.clear();
+            console.log("\nModificando documentos...");
 
-            actualizarJSON();
-            console.log("Actualizado con éxito.");
-            break;
+            let opcionModificar = 0;
+            do{
+                    console.log("1. Modificar Titulo");
+                    console.log("2. Modificar Tipo");
+                    console.log("3. Modificar Responsable");
+                    console.log("4. Salir");
 
+                    opcionModificar = Number(prompt("Elija la opcion: "))
+                    switch(opcionModificar){
+
+                        case 1:
+                            console.clear();
+                            id = prompt("Pon el ID del documento que quieres cambiar: ");
+            
+                        if(!baseDatos.existeDocumento(id)){
+                            console.log("No existe el documento");
+                            readline.keyInPause("presione una tecla para continuar");
+                        break;
+                        }
+                        else{
+                            let titulo = prompt("Escriba el nuevo titulo: ");
+                            baseDatos.modificarTituloDoc(id, titulo);
+                            console.log("Actualizado con éxito.");
+                            readline.keyInPause("presione una tecla para continuar");
+                        break;
+                        }
+
+                        case 2:
+                            console.clear();
+                            id = prompt("Pon el ID del documento que quieres cambiar: ");
+            
+                        if(!baseDatos.existeDocumento(id)){
+                            console.log("No existe el documento");
+                            readline.keyInPause("presione una tecla para continuar");
+                        break;
+                        }
+                        else{
+                            let tipo = prompt("Escriba el nuevo tipo: ");
+                            baseDatos.modificarTipoDoc(id, tipo);
+                            console.log("Actualizado con éxito.");
+                            readline.keyInPause("presione una tecla para continuar");
+                        break;
+                        }
+
+                        case 3:
+                            console.clear();
+                            id = prompt("Pon el ID del documento que quieres cambiar: ");
+            
+                        if(!baseDatos.existeDocumento(id)){
+                            console.log("No existe el documento");
+                            readline.keyInPause("presione una tecla para continuar");
+                        break;
+                        }
+                        else{
+                            let responsable = prompt("Escriba el nuevo responsable: ");
+                            baseDatos.modificarResponsableDoc(id, responsable);
+                            console.log("Actualizado con éxito.");
+                            readline.keyInPause("presione una tecla para continuar");
+                        break;
+                        }
+
+                        case 4:
+                            console.clear();
+                            console.log("\nProceso finalizado.")
+                            readline.keyInPause("presione una tecla para continuar");
+                        break;
+
+                        default:
+                            console.log("Eleccion invalida");
+                            readline.keyInPause("presione una tecla para continuar");
+                    }
+            }while(opcionModificar != 4);
+        break;
         case "4":
+            console.clear();
             console.log("\nBorrando documento...");
             idBusqueda = prompt("Pon el ID del documento que quieres eliminar: ");
-            let indice = documentos.findIndex(d => d.id == idBusqueda);
             
-            if (indice === -1) {
-                console.log("Documento no encontrado");
+            if(!baseDatos.existeDocumento(idBusqueda)){
+                console.log("No existe el Documento");
+                readline.keyInPause("presione una tecla para continuar");
                 break;
             }
-            
-            documentos.splice(indice, 1);
-            
-            actualizarJSON();
-            console.log("Eliminado exitosamente");
-            break;
-
+            else{
+                baseDatos.eliminarDocumento(idBusqueda);
+                console.log("Eliminado con éxito.");
+                readline.keyInPause("presione una tecla para continuar");
+                break;
+            }
         case "5":
             console.log("\nDatos guardados. Proceso finalizado.")
             console.log("\nHasta luego...");
-            break;
+        break;
 
         default:
             console.log("\nOpción invalida");
-            break;
+        break;
     }
-    
-
 
 } while (opcion != 5);
+
+baseDatos.cerrarBD();

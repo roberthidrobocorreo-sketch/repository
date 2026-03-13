@@ -1,18 +1,44 @@
 {
   "registro_institucional": [
     {
-      "id": 1773154077389,
-      "tipo": "Planilla",
-      "titulo": "Xoxo",
-      "responsable": "Yo quien mas",
+      "id": 1,
+      "titulo": "titulo",
+      "responsable": "tu2",
+      "tipo": "tipo2",
       "fecha": "10/3/2026"
     },
     {
-      "id": 1773154356109,
+      "id": 3,
+      "titulo": "acta",
+      "responsable": "mi mama",
+      "tipo": "acta"
+    },
+    {
+      "id": 4,
+      "titulo": "b",
+      "responsable": "b",
+      "tipo": "b"
+    },
+    {
+      "id": 5,
+      "titulo": "3",
+      "responsable": "3",
+      "tipo": "3",
+      "fecha": "25/3/2026"
+    },
+    {
+      "id": 6,
+      "titulo": "olfoef",
+      "responsable": "ifnoed",
+      "tipo": "acta",
+      "fecha": "31/3/2026"
+    },
+    {
+      "id": 7,
+      "titulo": "ghhy",
+      "responsable": "hghgh",
       "tipo": "Acta",
-      "titulo": "Nepe",
-      "responsable": "yo",
-      "fecha": "10/3/2026"
+      "fecha": "31/3/2026"
     }
   ]
 }
